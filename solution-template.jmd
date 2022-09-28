@@ -1,6 +1,6 @@
 ---
 title: "BEE 4750/5750 Homework 2"
-author: "Your name here (your netID here)"
+author: "Steven Wu (skw74)"
 date: `j import Dates; Dates.Date(Dates.now())`
 weave_options:
     term: true
@@ -19,10 +19,65 @@ Pkg.instantiate()
 # Problem 1
 
 ## Problem 1.1
+```julia
+#setting up constants
+ka = 0.55
+kc = 0.35
+kn = 0.25
+Cs = 10 #mg/L
+Coi = 7.5 #mg/L; initial DO
+Co1 = 5 #mg/L; DO from waste source 1
+Co2 = 5 #mg/L; DO from waste source 2
+Qi = 100000 #m^3/d; initial flow
+Q1 = 10000 #m^3/d; flow from waste source 1
+Q2 = 15000 #m^3/d; flow from waste source 2
+CBODi = 5 #mg/L; initial CBOD
+CBOD1 = 50 #mg/L; CBOD from waste source 1
+CBOD2 = 45 #mg/L; CBOD from waste source 2
+NBODi = 5 #mg/L; initial NBOD
+NBOD1 = 35 #mg/L; NBOD from waste source 1
+NBOD2 = 35 #mg/L; NBOD from waste source 2
+U= 6 #km/d
+
+function DOconcentration(x)
+#x is position from first waste source in km; has to be non-negative
+a1 = exp((-1*ka*x)/U)
+a2 = (kc/(ka-kc))*(exp((-1*kc*x)/U)-exp((-1*ka*x)/U))
+a3 = (kn/(ka-kn))*(exp((-1*kn*x)/U)-exp((-1*ka*x)/U))
+  Co_post1 = (Coi*Qi+Co1*Q1)/(Q1+Qi) #mass balance
+  Bo_post1 = (CBODi*Qi+CBOD1*Q1)/(Q1+Qi)
+  No_post1 = (NBODi*Qi+NBOD1*Q1)/(Q1+Qi)
+if x<15
+  return Cs*(1-a1)+Co_post1*a1-Bo_post1*a2-No_post1*a3
+else
+  Co_post2 = (Co_post1*(Q1+Qi)+Co2*Q2)/(Qi+Q1+Q2)
+  Bo_post2 = (Bo_post1*(Q1+Qi)+CBOD2*Q2)/(Qi+Q1+Q2)
+  No_post2 = (No_post1*(Q1+Qi)+NBOD2*Q2)/(Qi+Q1+Q2)
+  return Cs*(1-a1)+Co_post2*a1-Bo_post2*a2-No_post2*a3
+end
+end
+
+f = DOconcentration
+using Plots
+plot(f,0,50,ylabel="DO Concentration (mg/L)",xlabel="Distance from Waste Source 1 (km)")
+
+
+```
 
 ## Problem 1.2
+```julia
+i=15
+conc = DOconcentration(i)
+while conc < 6
+  i = i+1
+  conc=DOconcentration(i)
+end
+```
+The DO levels return to above 6 mg/L at `j i-15` km from the second waste source.
 
 ## Problem 1.3
+```julia
+```
 
 ## Problem 1.4
 
