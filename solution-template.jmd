@@ -139,8 +139,8 @@ end
 It takes `j treatment2()*100` % waste removal from both sources so the DO levels never reach below 4 mg/L.
 
 ## Problem 1.5
-Based on the results in 1.3 and 1.4, I would choose to treat waste stream 2 alone. 25% of both streams would mean
-$.25(50+35+45+35)=41.25 mg/L$ of waste treated, whereas treating waste stream 2 only involves treating $.48*(45+35)=38.4 mg/L$
+Based on the results in 1.3 and 1.4, I would choose to treat waste stream 2 alone. 28% of both streams would mean
+$.25(50+35+45+35)=46.2 mg/L$ of waste treated, whereas treating waste stream 2 only involves treating $.48*(45+35)=38.4 mg/L$
 of waste, so technically it's more efficient. However, an important consideration is the cost of treatment, specifically if treating
 NBOD costs more or less than treating CBOD. This would matter because the ratio of CBOD:NBOD treated changes depending on the treatment
 plan. 
@@ -190,7 +190,8 @@ function sample_correlated_uniform(n, a, b, corr_coef=0.7)
   samples = (unif_samples .* [a[2] - a[1] b[2] - b[1]]) .+ [a[1] b[1]]
   return samples
 end
-
+```
+```julia
 function failProbability2()
   c=0
   p = treatment() #percent removal for treating waste stream 2 only
