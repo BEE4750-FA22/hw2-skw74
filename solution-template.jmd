@@ -62,7 +62,6 @@ f = DOconcentration
 using Plots
 plot(f,0,50,ylabel="DO Concentration (mg/L)",xlabel="Distance from Waste Source 1 (km)")
 
-
 ```
 
 ## Problem 1.2
@@ -84,6 +83,9 @@ The DO levels return to above 6 mg/L at `j minDistance()-15` km from the second 
 ```julia
 function treatment()
   percentremoval = 0
+  #setting variables again in case other functions changed them
+  global CBODi = 5
+  global NBODi = 5
   global CBOD1 = 50
   global NBOD1 = 35
   global CBOD2 = 45
@@ -91,7 +93,7 @@ function treatment()
   CBOD2base = CBOD2 
   NBOD2base = NBOD2
   for i in 1:100
-    if DOconcentration(15)<4
+    if DOconcentration(15)<4 #Concentration is at its lowest at x=15, so only need to check this point
       percentremoval = i*0.01
       global CBOD2 = CBOD2base*(1-percentremoval)
       global NBOD2 = NBOD2base*(1-percentremoval)
@@ -107,6 +109,9 @@ It takes `j treatment()*100` % waste removal from source 2 so the DO levels neve
 ## Problem 1.4
 ```julia
 function treatment2()
+  #setting variables again in case other functions changed them
+  global CBODi = 5
+  global NBODi = 5
   global CBOD1 = 50
   global NBOD1 = 35
   global CBOD2 = 45
@@ -143,12 +148,20 @@ plan.
 
 ## Problem 1.6
 ```julia 
+using Random
+
 function failProbability()
   c = 0
-  samplesize = 200
+  p = treatment() #percent removal for treating waste stream 2 only
+  samplesize = 1000
+  Random.seed!(1)
   for i in 1:samplesize
-    global CBODi = 3*rand()+4 #random float from 4 to 7
-    global NBODi = 5*rand()+3 #random float from 3 to 8
+    global CBODi = 3*rand()+4
+    global NBODi = 5*rand()+3
+    global CBOD1 = 50
+    global NBOD1 = 35
+    global CBOD2 = p*45
+    global NBOD2 = p*35
     DO = DOconcentration(15)
     if DO > 4
       c += 1
@@ -157,6 +170,8 @@ function failProbability()
 return c/samplesize 
 end
 ```
+Based on the simulation above, the probability that the treatment plan will fail is `j failProbability()*100`%.
+
 ## Problem 1.7
 
 ```julia; echo=false
@@ -175,9 +190,31 @@ function sample_correlated_uniform(n, a, b, corr_coef=0.7)
   samples = (unif_samples .* [a[2] - a[1] b[2] - b[1]]) .+ [a[1] b[1]]
   return samples
 end
+
+function failProbability2()
+  c=0
+  p = treatment() #percent removal for treating waste stream 2 only
+  samplesize = 1000
+  sample = sample_correlated_uniform(samplesize,(4,7),(3,8))
+  for i in 1:samplesize
+    global CBODi = sample[i,1]
+    global NBODi = sample[i,2]
+    global CBOD1 = 50
+    global NBOD1 = 35
+    global CBOD2 = p*45
+    global NBOD2 = p*35
+    DO = DOconcentration(15)
+    if DO > 4
+      c += 1
+    end
+  end
+return c/samplesize 
+end
 ```
+Now the probability of failure becomes `j failProbability2()*100`%.
 
 ## Problem 1.8
+
 
 ```
 
