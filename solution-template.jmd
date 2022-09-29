@@ -214,7 +214,14 @@ end
 Now the probability of failure becomes `j failProbability2()*100`%.
 
 ## Problem 1.8
+The introduction of uncertainty and dependence drastically increases the chance of the treatment plan
+in Problem 1.5 failing. These simulations were done, however, with the absolute minimum percent of waste treated
+needed, so it's possible that increasing that percentage by just a little will greatly reduce the chance of failure.
+A new strategy would be to find the percent removal rate that would cause the failure rate to be under a certain threshold
+(such as 1%). Again, knowing how that affects the cost would be important in the decision-making process.
 
+Either way, accounting for the uncertainty and dependence in the first place is the best way to bring that failure rate
+down. 
 
 ```
 
